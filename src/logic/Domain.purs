@@ -125,7 +125,10 @@ newtype Tile = Tile { position :: Position
                     , currentPiece :: Maybe Piece
                     , numberOfMoves :: Int
                     }
-
+hasPiece :: Tile -> Boolean
+hasPiece (Tile t) = isJust t.currentPiece
+isEmpty :: Tile -> Boolean
+isEmpty (Tile t) = isNothing t.currentPiece
 derive instance newtypeTile :: Newtype Tile _
 data Player = WhitePlayer | BlackPlayer
 
@@ -154,4 +157,5 @@ pieceAt position board =
         (Tile t) = (tileAt position board)
     in
         t.currentPiece
-
+hasMoved :: Tile -> Boolean
+hasMoved (Tile t) = t.numberOfMoves >= 0

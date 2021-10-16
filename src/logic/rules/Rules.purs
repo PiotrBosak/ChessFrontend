@@ -8,7 +8,7 @@ import Domain
 
 moves :: Board -> Position -> PieceType -> Array { position :: Position, moveType :: MoveType }
 moves board position pieceType = case pieceType of
-    Pawn -> PR.moves
+    Pawn -> PR.moves board position
     Bishop -> []
     Knight -> []
     Rook -> []
@@ -16,7 +16,7 @@ moves board position pieceType = case pieceType of
     King -> []
 attacks :: Board -> Position -> PieceType -> Array { position :: Position, moveType :: MoveType }
 attacks board position pieceType = case pieceType of
-    Pawn -> PR.attacks
+    Pawn -> PR.attacks board position
     Bishop -> []
     Knight -> []
     Rook -> []
