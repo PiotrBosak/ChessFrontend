@@ -91,7 +91,7 @@ positionWithEnemyPiece board (Position attackingPosition) difference =
 
 
 isLePassantPossible :: Board -> Move -> PieceColor -> Position -> Boolean
-isLePassantPossible board previousMove color (Position attackerPosition) =
+isLePassantPossible board (Move previousMove) color (Position attackerPosition) =
     let
            (Position from ) = previousMove.from
            (Position to ) = previousMove.to
@@ -99,12 +99,12 @@ isLePassantPossible board previousMove color (Position attackerPosition) =
            isTheSameRank = to.rank == attackerPosition.rank
            isPreviousStartCorrect = from.rank == startingEnemyRank
            isFileTheSame = to.file == attackerPosition.file
-           isEnemyPawnMovedLast = enemyPawnMovedLast board color previousMove
+           isEnemyPawnMovedLast = enemyPawnMovedLast board color (wrap previousMove)
         in
         isTheSameRank && isPreviousStartCorrect && isFileTheSame && isEnemyPawnMovedLast
 
 enemyPawnMovedLast :: Board -> PieceColor -> Move -> Boolean
-enemyPawnMovedLast board color move =
+enemyPawnMovedLast board color (Move move) =
     let
        (Tile tile) = (tileAt move.from board)
     in

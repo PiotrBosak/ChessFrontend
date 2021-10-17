@@ -138,10 +138,13 @@ data MoveType
            | Castling
            | LePassant
 
-type Move = { from :: Position
+newtype Move = Move { from :: Position
             , to :: Position
             , moveType :: MoveType
             }
+
+derive instance newtypeMove :: Newtype Move _
+
 type Board = { tiles :: Map Position Tile
              , previousMove :: Maybe Move
              }
