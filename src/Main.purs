@@ -18,12 +18,16 @@ import Halogen.HTML.Events as HE
 import Halogen.HTML.Properties as HP
 import Halogen.VDom.Driver (runUI)
 import Web.Event.Event (Event)
+import Effect.Class.Console (log)
 import Web.Event.Event as Event
+import BoardFactory
+import Data.Map.Internal
 
 main :: Effect Unit
-main = runHalogenAff do
-  body <- awaitBody
-  runUI S.component unit body
+main =
+    do
+       let board = createBoard
+       log $ show $ size board.tiles
 
 
 data IsLoading = Loading | NotLoading

@@ -56,6 +56,8 @@ numberToRank = case _ of
     8 -> Just Eight
     _ -> Nothing
 
+nextRank :: Rank -> Maybe Rank
+nextRank rank = numberToRank $ (rankToNumber rank) + 1
 data File
         = A
         | B
@@ -92,6 +94,9 @@ numberToFile  = case _ of
    8 -> Just H
    _ -> Nothing
 
+nextFile :: File -> Maybe File
+nextFile file = numberToFile $ (fileToNumber file) + 1
+
 newtype Piece = Piece { pieceType :: PieceType
                       , color :: PieceColor
                       }
@@ -102,6 +107,12 @@ data TileColor = WhiteTile | BlackTile
 newtype Position = Position { file :: File
                             , rank :: Rank
                             }
+tileColor :: Position -> TileColor
+tileColor (Position position) =
+    if mod ((rankToNumber position.rank) + (fileToNumber position.file)) 2 == 0
+    then WhiteTile
+    else BlackTile
+
 derive instance newtypePosition :: Newtype Position _
 instance eqPosition :: Eq Position where
    eq :: Position -> Position -> Boolean
@@ -127,6 +138,8 @@ newtype Tile = Tile { position :: Position
                     }
 hasPiece :: Tile -> Boolean
 hasPiece (Tile t) = isJust t.currentPiece
+position :: Tile -> Position
+position (Tile t) = t.position
 isEmpty :: Tile -> Boolean
 isEmpty (Tile t) = isNothing t.currentPiece
 derive instance newtypeTile :: Newtype Tile _
