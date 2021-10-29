@@ -1,6 +1,8 @@
 module PawnRules (moves,attacks) where
 import Domain
+import Debug
 import Data.Tuple
+import Debug
 import Data.Maybe
 import Data.Array
 import Data.Newtype (wrap,unwrap)
@@ -63,7 +65,12 @@ attackPosition board position f =
             let (Tile tile) = tileAt position board
             pieceColor <- map (unwrap >>> \p -> p.color) tile.currentPiece
             let difference = f pieceColor
-            movePosition position difference
+            toPosition <- movePosition position difference
+            let (Tile tileTo) = tileAt toPosition board
+            (Piece toPiece) <-  tileTo.currentPiece
+            guard $ toPiece.color /= pieceColor
+            pure toPosition
+
 
 lePassant :: Board -> Position -> Maybe { position :: Position, moveType :: MoveType }
 lePassant board position = head $ mapMaybe (\b -> lePassant' board position b) [true,false]
@@ -82,30 +89,36 @@ positionWithEnemyPiece board (Position attackingPosition) difference =
     do
         withEnemyFile <- numberToFile $ fileToNumber attackingPosition.file + difference
         let withEnemyPiece = attackingPosition { file = withEnemyFile }
-        previousMove <- board.previousMove
+        previousMove <- trace ("plumba" <> (show withEnemyPiece)) \_ -> board.previousMove
         (Piece attackingPiece) <- pieceAt (wrap attackingPosition) board
-        guard $ isLePassantPossible board previousMove attackingPiece.color (wrap attackingPosition)
+        guard $ isLePassantPossible board previousMove attackingPiece.color (wrap attackingPosition) withEnemyFile
         let rankDifference = if attackingPiece.color == WhitePiece then 1 else -1
         newRank <- numberToRank $ rankToNumber withEnemyPiece.rank + rankDifference
         pure $ wrap $ withEnemyPiece { rank = newRank }
 
 
-isLePassantPossible :: Board -> Move -> PieceColor -> Position -> Boolean
-isLePassantPossible board (Move previousMove) color (Position attackerPosition) =
+isLePassantPossible :: Board -> Move -> PieceColor -> Position -> File -> Boolean
+isLePassantPossible board (Move previousMove) color (Position attackerPosition) withEnemyFile=
     let
            (Position from ) = previousMove.from
            (Position to ) = previousMove.to
            startingEnemyRank = if color == WhitePiece then Seven else Two
+           g = trace (show to.rank) \_ -> 5
+           h = trace (show attackerPosition.rank) \_ -> 5
            isTheSameRank = to.rank == attackerPosition.rank
            isPreviousStartCorrect = from.rank == startingEnemyRank
-           isFileTheSame = to.file == attackerPosition.file
+           isFileTheSame = to.file == withEnemyFile
            isEnemyPawnMovedLast = enemyPawnMovedLast board color (wrap previousMove)
+           a = trace ("sameRank" <> (show isTheSameRank)) \_ -> 5
+           b = trace ("previous" <> (show isPreviousStartCorrect)) \_ -> 5
+           c = trace ("sameFile" <> (show isFileTheSame)) \_ -> 5
+           d = trace ("enemy" <> (show isEnemyPawnMovedLast)) \_ -> 5
         in
         isTheSameRank && isPreviousStartCorrect && isFileTheSame && isEnemyPawnMovedLast
 
 enemyPawnMovedLast :: Board -> PieceColor -> Move -> Boolean
-enemyPawnMovedLast board color (Move move) =
+enemyPawnMovedLast board color (Move m) =
     let
-       (Tile tile) = (tileAt move.from board)
+       (Tile tile) = (tileAt m.to board)
     in
-       maybe false (\(Piece p) -> p.pieceType == Pawn && p.color == color) tile.currentPiece
+       maybe false (\(Piece p) -> p.pieceType == Pawn && p.color /= color) tile.currentPiece

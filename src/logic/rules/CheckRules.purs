@@ -1,4 +1,4 @@
-module CheckAndMateRules(isKingChecked) where
+module CheckRules(isKingChecked) where
 import Domain
 import Control.MonadZero
 import Data.Maybe as MA
@@ -7,6 +7,8 @@ import Rules as R
 import Data.Map as M
 import Data.Newtype
 import Data.Array
+import Rules
+import Domain
 import Prelude
 
 

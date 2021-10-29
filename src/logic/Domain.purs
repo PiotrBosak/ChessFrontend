@@ -1,5 +1,9 @@
 module Domain where
 import Data.Maybe
+import Data.Generic.Rep (class Generic)
+import Control.Comonad.Store
+import Control.Comonad
+import Data.Show.Generic (genericShow)
 import Effect.Unsafe (unsafePerformEffect)
 import Data.Tuple
 import Data.Ord
@@ -20,6 +24,9 @@ derive instance ordPieceType :: Ord PieceType
 data PieceColor = BlackPiece | WhitePiece
 derive instance eqPieceColor :: Eq PieceColor
 
+duplicateStore :: forall s a. Store s a -> Store s (Store s a)
+duplicateStore (Store here go) = Store here $ \n -> Store there go
+
 data Rank
         = One
         | Two
@@ -32,6 +39,9 @@ data Rank
 
 derive instance eqRank :: Eq Rank
 derive instance ordRank :: Ord Rank
+derive instance genericRank :: Generic Rank _
+instance showRank :: Show Rank where
+  show = genericShow
 
 rankToNumber :: Rank -> Int
 rankToNumber = case _ of
@@ -70,6 +80,9 @@ data File
 
 derive instance eqFile :: Eq File
 derive instance ordFile :: Ord File
+derive instance genericFile :: Generic File _
+instance showFile :: Show File where
+  show = genericShow
 
 fileToNumber :: File -> Int
 fileToNumber = case _ of
@@ -102,16 +115,24 @@ newtype Piece = Piece { pieceType :: PieceType
                       }
 
 derive instance newtypePiece:: Newtype Piece _
-data TileColor = WhiteTile | BlackTile
+instance eqPiece :: Eq Piece where
+    eq (Piece fst) (Piece snd) = (eq fst.pieceType snd.pieceType) && (eq fst.color snd.color)
 
+
+data TileColor = WhiteTile | BlackTile
 newtype Position = Position { file :: File
                             , rank :: Rank
                             }
-tileColor :: Position -> TileColor
-tileColor (Position position) =
-    if mod ((rankToNumber position.rank) + (fileToNumber position.file)) 2 == 0
-    then WhiteTile
-    else BlackTile
+tileColor :: Tile -> TileColor
+tileColor (Tile tile) =
+    let (Position position) = tile.position
+    in
+        if (rankToNumber position.rank) + (fileToNumber position.file) `mod` 2 == 1
+        then WhiteTile
+        else BlackTile
+
+instance showPosition :: Show Position where
+    show (Position position) = show position.file <> " " <> show position.rank
 
 derive instance newtypePosition :: Newtype Position _
 instance eqPosition :: Eq Position where
@@ -136,6 +157,13 @@ newtype Tile = Tile { position :: Position
                     , currentPiece :: Maybe Piece
                     , numberOfMoves :: Int
                     }
+
+instance ordTile :: Ord Tile where
+    compare (Tile fst) (Tile snd) = compare fst.position snd.position
+
+instance eqTile :: Eq Tile where
+    eq (Tile fst) (Tile snd) = (eq fst.position snd.position) && (eq fst.currentPiece snd.currentPiece)
+
 hasPiece :: Tile -> Boolean
 hasPiece (Tile t) = isJust t.currentPiece
 position :: Tile -> Position

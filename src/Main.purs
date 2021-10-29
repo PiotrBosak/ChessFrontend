@@ -21,13 +21,21 @@ import Web.Event.Event (Event)
 import Effect.Class.Console (log)
 import Web.Event.Event as Event
 import BoardFactory
+import Data.Maybe
+import BoardComponent as BC
+import Game
+import Domain
 import Data.Map.Internal
 
 main :: Effect Unit
-main =
-    do
-       let board = createBoard
-       log $ show $ size board.tiles
+main = runHalogenAff do
+  body <- awaitBody
+  runUI BC.component unit body
+--       let game = makeGame
+--       let positionFrom = Position $ {file: E,rank: Two }
+--       let positionTo = Position $ {file: E,rank: Five }
+--       let afterMove = move positionFrom positionTo game
+--       log $ show $ isJust afterMove
 
 
 data IsLoading = Loading | NotLoading

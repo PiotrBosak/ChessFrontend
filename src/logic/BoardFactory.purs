@@ -83,15 +83,15 @@ tilesWithWhiteRooks =
 tileWithWhiteKing :: Map Position Tile
 tileWithWhiteKing=
     let  firstPosition = Position {file: E, rank: One }
-         knight = Piece {pieceType: Knight, color: WhitePiece}
-         firstTile = Tile {position: firstPosition, currentPiece: Just knight, numberOfMoves: 0}
+         king = Piece {pieceType: King, color: WhitePiece}
+         firstTile = Tile {position: firstPosition, currentPiece: Just king, numberOfMoves: 0}
     in insert firstPosition firstTile empty
 
 tileWithBlackKing :: Map Position Tile
 tileWithBlackKing =
     let  firstPosition = Position {file: E, rank: Eight }
-         knight = Piece {pieceType: Knight, color: BlackPiece}
-         firstTile = Tile {position: firstPosition, currentPiece: Just knight, numberOfMoves: 0}
+         king = Piece {pieceType: King, color: BlackPiece}
+         firstTile = Tile {position: firstPosition, currentPiece: Just king, numberOfMoves: 0}
     in insert firstPosition firstTile empty
 
 tileWithBlackQueen :: Map Position Tile
