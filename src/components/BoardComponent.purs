@@ -35,6 +35,7 @@ import Game
 import Control.Plus
 import Data.Int
 import Prelude
+import Debug
 import Effect (Effect)
 import Effect.Aff.Class (class MonadAff)
 import Effect.Class.Console (log)
@@ -114,15 +115,13 @@ handleAction = case _ of
     Click to ->
         do
             state <- H.get
-            log $ (show state.selectedPosition)
             let newState = case state.selectedPosition of
                     Nothing -> state {selectedPosition = Just to }
                     Just from ->
                      let afterMove = move from to state.game
                      in maybe (state {selectedPosition = Just to}) (\g -> state { game = g, selectedPosition = Nothing }) afterMove
-            log $ (show newState.selectedPosition)
-            log $ show newState.game
             H.put newState
+            handleAction IsCheckOrMate
 
     IsCheckOrMate -> H.modify_ \s -> s {game = updateCheckOrMate (s.game)}
 

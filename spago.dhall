@@ -38,6 +38,7 @@ to generate this file without the comments in this block.
   , "routing-duplex"
   , "strings"
   , "tailrec"
+  , "transformers"
   , "tuples"
   , "validation"
   , "web-events"

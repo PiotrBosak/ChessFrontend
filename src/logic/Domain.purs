@@ -24,9 +24,6 @@ derive instance ordPieceType :: Ord PieceType
 data PieceColor = BlackPiece | WhitePiece
 derive instance eqPieceColor :: Eq PieceColor
 
-duplicateStore :: forall s a. Store s a -> Store s (Store s a)
-duplicateStore (Store here go) = Store here $ \n -> Store there go
-
 data Rank
         = One
         | Two
@@ -120,6 +117,9 @@ instance eqPiece :: Eq Piece where
 
 
 data TileColor = WhiteTile | BlackTile
+derive instance genericTileColor :: Generic TileColor _
+instance showTileColor :: Show TileColor where
+  show = genericShow
 newtype Position = Position { file :: File
                             , rank :: Rank
                             }
@@ -127,7 +127,7 @@ tileColor :: Tile -> TileColor
 tileColor (Tile tile) =
     let (Position position) = tile.position
     in
-        if (rankToNumber position.rank) + (fileToNumber position.file) `mod` 2 == 1
+        if ((rankToNumber position.rank) + (fileToNumber position.file)) `mod` 2 == 1
         then WhiteTile
         else BlackTile
 
@@ -163,6 +163,9 @@ instance ordTile :: Ord Tile where
 
 instance eqTile :: Eq Tile where
     eq (Tile fst) (Tile snd) = (eq fst.position snd.position) && (eq fst.currentPiece snd.currentPiece)
+
+instance showTile :: Show Tile where
+    show (Tile tile) = (show tile.position) <> (show $ tileColor (wrap tile))
 
 hasPiece :: Tile -> Boolean
 hasPiece (Tile t) = isJust t.currentPiece

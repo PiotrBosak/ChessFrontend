@@ -89,7 +89,7 @@ positionWithEnemyPiece board (Position attackingPosition) difference =
     do
         withEnemyFile <- numberToFile $ fileToNumber attackingPosition.file + difference
         let withEnemyPiece = attackingPosition { file = withEnemyFile }
-        previousMove <- trace ("plumba" <> (show withEnemyPiece)) \_ -> board.previousMove
+        previousMove <- board.previousMove
         (Piece attackingPiece) <- pieceAt (wrap attackingPosition) board
         guard $ isLePassantPossible board previousMove attackingPiece.color (wrap attackingPosition) withEnemyFile
         let rankDifference = if attackingPiece.color == WhitePiece then 1 else -1
@@ -103,16 +103,10 @@ isLePassantPossible board (Move previousMove) color (Position attackerPosition) 
            (Position from ) = previousMove.from
            (Position to ) = previousMove.to
            startingEnemyRank = if color == WhitePiece then Seven else Two
-           g = trace (show to.rank) \_ -> 5
-           h = trace (show attackerPosition.rank) \_ -> 5
            isTheSameRank = to.rank == attackerPosition.rank
            isPreviousStartCorrect = from.rank == startingEnemyRank
            isFileTheSame = to.file == withEnemyFile
            isEnemyPawnMovedLast = enemyPawnMovedLast board color (wrap previousMove)
-           a = trace ("sameRank" <> (show isTheSameRank)) \_ -> 5
-           b = trace ("previous" <> (show isPreviousStartCorrect)) \_ -> 5
-           c = trace ("sameFile" <> (show isFileTheSame)) \_ -> 5
-           d = trace ("enemy" <> (show isEnemyPawnMovedLast)) \_ -> 5
         in
         isTheSameRank && isPreviousStartCorrect && isFileTheSame && isEnemyPawnMovedLast
 

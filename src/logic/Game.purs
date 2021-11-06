@@ -38,6 +38,10 @@ instance showGame :: Show Game where
 
 data GameStatus = Cont | Finished | Checking
 derive instance eqGameStatus :: Eq GameStatus
+derive instance genericGameStatus :: Generic GameStatus _
+instance showGameStatus :: Show GameStatus where
+    show = genericShow
+
 isKingMated :: Game -> PieceColor -> Boolean
 isKingMated (Game game) kingColor =
     isKingChecked (game.currentBoard) kingColor && cannotBeDefended (wrap game) kingColor
@@ -47,22 +51,22 @@ updateCheckOrMate (Game game) =
     if game.gameStatus == Checking
     then
         let kingMate = isKingMated (wrap game) (if game.turn == WhiteTurn then WhitePiece else BlackPiece )
-        in Game $ game {gameStatus = if kingMate then Finished else Cont }
+            (Game newGame) = Game $ game {gameStatus = if kingMate then Finished else Cont }
+        in (wrap newGame)
     else (wrap game)
 
 move :: Position -> Position -> Game -> Maybe Game
 move from to (Game game) =
    do
-      let fdasfasd = trace ("isGameCont" <> (show (game.gameStatus == Cont))) \_ -> 5
-      _ <- if game.gameStatus == Cont then Just 5 else Nothing
-      let currentBoard = trace (show from) \_ -> trace (show to) \_ -> game.currentBoard
+      guard $ game.gameStatus /= Finished
+      let currentBoard = game.currentBoard
       let (Tile tileFromTest) = tileAt from currentBoard
       (Piece tileFromPiece) <- tileFromTest.currentPiece
       guard $ if game.turn == WhiteTurn then tileFromPiece.color == WhitePiece else tileFromPiece.color == BlackPiece
       let moves = allMoves currentBoard from
-      (Tile tileTo) <- trace (show (length moves)) \_ -> Just $ tileAt to currentBoard
+      (Tile tileTo) <- Just $ tileAt to currentBoard
       {position: position, moveType: moveType} <- find (\r -> tileTo.position == r.position) moves
-      let (Tile tileFrom) = trace (show position) \_ -> tileAt from currentBoard
+      let (Tile tileFrom) = tileAt from currentBoard
       (Piece attackingPiece) <- tileFrom.currentPiece
       guard $ if attackingPiece.color == WhitePiece then game.turn == WhiteTurn else game.turn == BlackTurn
       let move = Move { from: tileFrom.position
