@@ -139,9 +139,6 @@ square = case _ of
     Black -> HC.style $ C.height (C.px $ toNumber 50) *> C.width (C.px $ toNumber 50) *> C.backgroundColor (C.rgb 32 32 32) *>  C.display C.inlineBlock
     Selected -> HC.style $ C.height (C.px $ toNumber 50) *> C.width (C.px $ toNumber 50) *> C.backgroundColor (C.rgb 0 127 255) *>  C.display C.inlineBlock
 
-selectedColor = C.rgb 246 248 121
-
-
 handleAction :: forall output m. MonadAff m => Action -> H.HalogenM State Action () output m Unit
 handleAction = case _ of
     Click to ->
