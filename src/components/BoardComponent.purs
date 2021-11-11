@@ -135,9 +135,9 @@ imageName = case _ of
 
 
 square = case _ of
-    White -> HC.style $ C.height (C.px $ toNumber 50) *> C.width (C.px $ toNumber 50) *> C.backgroundColor (C.rgb 238 238 210) *>  C.display C.inlineBlock
-    Black -> HC.style $ C.height (C.px $ toNumber 50) *> C.width (C.px $ toNumber 50) *> C.backgroundColor (C.rgb 118 150 86) *>  C.display C.inlineBlock
-    Selected -> HC.style $ C.height (C.px $ toNumber 50) *> C.width (C.px $ toNumber 50) *> C.backgroundColor (C.rgb 246 248 121) *>  C.display C.inlineBlock
+    White -> HC.style $ C.height (C.px $ toNumber 50) *> C.width (C.px $ toNumber 50) *> C.backgroundColor (C.rgb 245 245 245) *>  C.display C.inlineBlock
+    Black -> HC.style $ C.height (C.px $ toNumber 50) *> C.width (C.px $ toNumber 50) *> C.backgroundColor (C.rgb 32 32 32) *>  C.display C.inlineBlock
+    Selected -> HC.style $ C.height (C.px $ toNumber 50) *> C.width (C.px $ toNumber 50) *> C.backgroundColor (C.rgb 0 127 255) *>  C.display C.inlineBlock
 
 selectedColor = C.rgb 246 248 121
 
