@@ -20,7 +20,6 @@ in pkgs.stdenv.mkDerivation {
     pursPkgs.purs
     pursPkgs.spago
     pursPkgs.zephyr
-    pkgs.nodePackages.parcel-bundler
     pkgs.nodejs-14_x
   ];
 }

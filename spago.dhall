@@ -1,48 +1,57 @@
-{-
-Welcome to a Spago project!
-You can edit this file as you like.
-
-Need help? See the following resources:
-- Spago documentation: https://github.com/purescript/spago
-- Dhall language tour: https://docs.dhall-lang.org/tutorials/Language-Tour.html
-
-When creating a new Spago project, you can use
-`spago init --no-comments` or `spago init -C`
-to generate this file without the comments in this block.
--}
-{ name = "my-project"
+{ name = "halogen-realworld"
+, packages = ./packages.dhall
 , dependencies =
   [ "aff"
   , "affjax"
+  , "argonaut-core"
   , "arrays"
+  , "bifunctors"
+  , "codec"
+  , "codec-argonaut"
   , "console"
-  , "control"
-  , "css"
-  , "debug"
+  , "const"
+  , "datetime"
+  , "dom-indexed"
   , "effect"
   , "either"
-  , "exceptions"
+  , "enums"
+  , "foldable-traversable"
+  , "formatters"
   , "halogen"
-  , "halogen-css"
-  , "halogen-subscriptions"
-  , "integers"
-  , "js-timers"
+  , "halogen-formless"
+  , "halogen-store"
+  , "http-methods"
   , "lists"
   , "maybe"
   , "newtype"
+  , "now"
+  , "debug"
+  , "css"
+  , "halogen-css"
+  , "halogen-subscriptions"
+  , "control"
+  , "exceptions"
+  , "integers"
   , "ordered-collections"
+  , "parallel"
+  , "precise-datetime"
   , "prelude"
-  , "psci-support"
-  , "random"
+  , "profunctor"
+  , "profunctor-lenses"
+  , "remotedata"
   , "routing"
   , "routing-duplex"
+  , "safe-coerce"
+  , "slug"
   , "strings"
-  , "tailrec"
   , "transformers"
   , "tuples"
-  , "validation"
+  , "typelevel-prelude"
+  , "variant"
   , "web-events"
+  , "web-html"
+  , "web-storage"
+  , "web-uievents"
   ]
-, packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
 }
