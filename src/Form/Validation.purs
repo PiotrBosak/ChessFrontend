@@ -9,7 +9,11 @@
 module Conduit.Form.Validation where
 
 import Prelude
-
+import Data.Codec.Argonaut
+import Data.Argonaut.Decode.Class
+import Data.Maybe
+import Data.Either
+import Data.Argonaut.Decode
 import Conduit.Data.Avatar (Avatar)
 import Conduit.Data.Avatar as Avatar
 import Conduit.Data.Email (Email(..))
@@ -18,6 +22,7 @@ import Conduit.Data.Username as Username
 import Data.Either (Either(..), note)
 import Data.Maybe (Maybe(..))
 import Data.String as String
+import Data.Experience
 import Formless as F
 
 -- | This short list of errors represent the only ways in which validation could have failed
@@ -29,6 +34,7 @@ data FormError
   | TooShort
   | TooLong
   | InvalidEmail
+  | InvalidExperience
   | InvalidUsername
   | InvalidAvatar
 
@@ -42,6 +48,7 @@ errorToString = case _ of
   TooLong -> "Too many characters entered"
   InvalidEmail -> "Invalid email address"
   InvalidUsername -> "Invalid username"
+  InvalidExperience -> "Invalid experience"
   InvalidAvatar -> "Invalid image URL"
 
 -- | We're using Formless, a form library for Halogen. It abstracts away the mechanics of updating
@@ -94,6 +101,12 @@ required = F.hoistFnE_ $ cond (_ /= mempty) Required
 -- | This validator ensures that an input string is longer than the provided lower limit.
 minLength :: forall form m. Monad m => Int -> F.Validation form m FormError String String
 minLength n = F.hoistFnE_ $ cond (\str -> String.length str > n) TooShort
+
+isCorrectType :: forall form m. Monad m => F.Validation form m FormError String Experience
+isCorrectType = F.hoistFnE_ $ \s -> note InvalidExperience (isValidExperienceType s)
+
+isValidExperienceType :: String -> Maybe Experience
+isValidExperienceType = fromString
 
 -- | This validator ensures that an input string is shorter than the provided upper limit.
 maxLength :: forall form m. Monad m => Int -> F.Validation form m FormError String String

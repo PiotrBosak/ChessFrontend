@@ -24,6 +24,7 @@ import Prelude
 
 import Affjax (Request, printError, request)
 import Affjax.RequestBody as RB
+import Data.Experience as DE
 import Affjax.RequestHeader (RequestHeader(..))
 import Affjax.ResponseFormat as RF
 import Conduit.Api.Endpoint (Endpoint(..), endpointCodec)
@@ -147,6 +148,7 @@ defaultRequest (BaseURL baseUrl) auth { endpoint, method } =
 type RegisterFields =
   { email :: Email
   , password :: String
+  , experience :: DE.Experience
   , username :: Username
   }
 
@@ -155,6 +157,7 @@ registerCodec =
   CAR.object "RegisterFields"
     { email: Email.codec
     , password: CA.string
+    , experience: DE.codec
     , username: Username.codec
     }
 

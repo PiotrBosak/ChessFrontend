@@ -6,6 +6,7 @@ import Prelude
 
 import Conduit.Api.Request (RegisterFields)
 import Conduit.Capability.Navigate (class Navigate, navigate)
+import Data.Experience
 import Conduit.Capability.Resource.User (class ManageUser, registerUser)
 import Conduit.Component.HTML.Header (header)
 import Conduit.Component.HTML.Utils (css, safeHref)
@@ -33,6 +34,7 @@ newtype RegisterForm (r :: Row Type -> Type) f = RegisterForm
   ( r
       ( username :: f V.FormError String Username
       , email :: f V.FormError String Email
+      , experience :: f V.FormError String Experience
       , password :: f V.FormError String String
       )
   )
@@ -106,6 +108,7 @@ formComponent = F.component formInput $ F.defaultSpec
     { validators: RegisterForm
         { username: V.required >>> V.usernameFormat
         , email: V.required >>> V.minLength 3 >>> V.emailFormat
+        , experience: V.isCorrectType
         , password: V.required >>> V.minLength 8 >>> V.maxLength 20
         }
     , initialInputs: Nothing
@@ -126,6 +129,7 @@ formComponent = F.component formInput $ F.defaultSpec
       [ HH.fieldset_
           [ username
           , email
+          , experience
           , password
           ]
       , Field.submit "Sign up"
@@ -134,6 +138,10 @@ formComponent = F.component formInput $ F.defaultSpec
     username =
       Field.input (Proxy :: Proxy "username") form
         [ HP.placeholder "Username", HP.type_ HP.InputText ]
+
+    experience =
+            Field.input (Proxy :: Proxy "experience") form
+        [ HP.placeholder "beginner", HP.type_ HP.InputText ]
 
     email =
       Field.input (Proxy :: Proxy "email") form

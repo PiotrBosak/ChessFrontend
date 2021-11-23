@@ -4,6 +4,8 @@
   [ "aff"
   , "affjax"
   , "argonaut-core"
+  , "argonaut"
+  , "argonaut-codecs"
   , "arrays"
   , "debug"
   , "css"
